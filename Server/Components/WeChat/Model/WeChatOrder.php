@@ -49,6 +49,28 @@ class WeChatOrder extends WeChatBaseModel
     }
 
     /**
+     * 支付的回调
+     * @param $post_arr
+     * @return array|bool
+     */
+    public function pay_callback($post_arr)
+    {
+        $data = (array)simplexml_load_string($post_arr, 'SimpleXMLElement', LIBXML_NOCDATA);
+        $return_code = $data['return_code'];//成功标识
+        $sign = $data['sign'];//签名
+
+        //验证是否支付成功
+        if (empty($return_code) || strtoupper($return_code) != 'SUCCESS') {
+            return false;
+        }
+        if ($this->wx_sign($sign, $data)) {//签名验证成功
+            return $data;
+        } else {
+            return false;
+        }
+    }
+
+    /**
      * post xml 到微信请求统一下单接口
      * @param $xml
      * @return mixed
