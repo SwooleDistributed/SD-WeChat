@@ -7,6 +7,8 @@
  */
 
 namespace Server\Components\WeChat;
+use Server\CoreBase\HttpInput;
+use Server\CoreBase\HttpOutput;
 
 class WeChatLogin extends WeChatBaseModel
 {
@@ -45,9 +47,25 @@ class WeChatLogin extends WeChatBaseModel
 
         return $wuser_info;
     }
+    /**
+     * 获取code
+     * @param $request
+     * @param $scope
+     * @return string
+     * @throws \Exception
+     */
+    public function auth(HttpInput &$request,HttpOutput &$http_output,$scope='snsapi_userinfo'){
+        if (!$request->get('code')){
 
-    public function getcode(){
-        $appid = $this->config->get('wechat_appid');
-        return $url;
+            $appid = $this->config->get('wechat_appid');
+            $redirect_uri = $request->getRequestUri();
+            $url="https://open.weixin.qq.com/connect/oauth2/authorize?appid={$appid}&redirect_uri={$redirect_uri}&response_type=code&scope={$scope}";
+
+            $http_output->setStatusHeader(302);
+            $http_output->setHeader('Location', $url);
+            $http_output->end('end');
+        }
+        
+        return $request->get('code');
     }
 }
