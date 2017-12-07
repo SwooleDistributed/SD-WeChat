@@ -58,7 +58,7 @@ class WeChatLogin extends WeChatBaseModel
         if (!$request->get('code')){
 
             $appid = $this->config->get('wechat_appid');
-            $redirect_uri = $request->getRequestUri();
+            $redirect_uri = urlencode($request->getRequestUri());
             $url="https://open.weixin.qq.com/connect/oauth2/authorize?appid={$appid}&redirect_uri={$redirect_uri}&response_type=code&scope={$scope}";
 
             $http_output->setStatusHeader(302);
