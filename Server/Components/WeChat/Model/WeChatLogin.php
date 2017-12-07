@@ -45,4 +45,9 @@ class WeChatLogin extends WeChatBaseModel
 
         return $wuser_info;
     }
+
+    public function getcode(){
+        $appid = $this->config->get('wechat_appid');
+        return $url;
+    }
 }
